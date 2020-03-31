@@ -1,0 +1,10 @@
+C:\Users\Jordan\Desktop\InvarEngine\obj\Debug\net461\InvarEngine.csprojAssemblyReference.cache
+C:\Users\Jordan\Desktop\InvarEngine\obj\Debug\net461\InvarEngine.AssemblyInfoInputs.cache
+C:\Users\Jordan\Desktop\InvarEngine\obj\Debug\net461\InvarEngine.AssemblyInfo.cs
+C:\Users\Jordan\Desktop\InvarEngine\bin\Debug\net461\InvarEngine.exe.config
+C:\Users\Jordan\Desktop\InvarEngine\bin\Debug\net461\InvarEngine.exe
+C:\Users\Jordan\Desktop\InvarEngine\bin\Debug\net461\InvarEngine.pdb
+C:\Users\Jordan\Desktop\InvarEngine\bin\Debug\net461\OpenTK.dll
+C:\Users\Jordan\Desktop\InvarEngine\obj\Debug\net461\InvarEngine.csproj.CopyComplete
+C:\Users\Jordan\Desktop\InvarEngine\obj\Debug\net461\InvarEngine.exe
+C:\Users\Jordan\Desktop\InvarEngine\obj\Debug\net461\InvarEngine.pdb

@@ -1,0 +1,57 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Jordan\\Desktop\\InvarEngine\\InvarEngine.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Jordan\\Desktop\\InvarEngine\\InvarEngine.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Jordan\\Desktop\\InvarEngine\\InvarEngine.csproj",
+        "projectName": "InvarEngine",
+        "projectPath": "C:\\Users\\Jordan\\Desktop\\InvarEngine\\InvarEngine.csproj",
+        "packagesPath": "C:\\Users\\Jordan\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Jordan\\Desktop\\InvarEngine\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Jordan\\AppData\\Roaming\\NuGet\\NuGet.Config"
+        ],
+        "originalTargetFrameworks": [
+          "net461"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net461": {
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net461": {
+          "dependencies": {
+            "OpenTK": {
+              "target": "Package",
+              "version": "[3.1.0, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.100\\RuntimeIdentifierGraph.json"
+        }
+      },
+      "runtimes": {
+        "win7-x86": {
+          "#import": []
+        }
+      }
+    }
+  }
+}
