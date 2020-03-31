@@ -10,6 +10,7 @@ namespace InvarEngine
     {
 
         public GameWindow window;
+        Texture2D texture;
 
         public Game(GameWindow windowInput)
         {
@@ -27,6 +28,8 @@ namespace InvarEngine
         {
 
             GL.ClearColor(Color.FromArgb(5, 5, 25));
+
+            texture = ContentPipe.LoadTexture("Icon.png");
 
         }
 
@@ -47,12 +50,31 @@ namespace InvarEngine
         void window_RenderFrame(object sender, FrameEventArgs e)
         {
 
-            
+       
             GL.Clear(ClearBufferMask.ColorBufferBit);
 
+            GL.Enable(EnableCap.Blend);
+            GL.Enable(EnableCap.Texture2D);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
+            
+            GL.BindTexture(TextureTarget.Texture2D, texture.ID);
 
             GL.Begin(PrimitiveType.Triangles);
-            
+
+           
+            GL.Color3(Color.Red);
+            GL.TexCoord2(0, 0);
+            GL.Vertex2(0, 0);
+
+            GL.Color3(Color.Green);
+            GL.TexCoord2(1, 0);
+            GL.Vertex2(1, 1);
+
+            GL.Color3(Color.Blue);
+            GL.TexCoord2(1, 1);
+            GL.Vertex2(-1, 1);
+
+            GL.End();            
 
 
             GL.Flush();

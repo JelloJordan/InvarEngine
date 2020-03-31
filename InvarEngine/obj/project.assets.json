@@ -53,11 +53,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Jordan\\Desktop\\InvarEngine\\InvarEngine.csproj",
+      "projectUniqueName": "C:\\Users\\Jordan\\Desktop\\InvarEngine\\InvarEngine\\InvarEngine.csproj",
       "projectName": "InvarEngine",
-      "projectPath": "C:\\Users\\Jordan\\Desktop\\InvarEngine\\InvarEngine.csproj",
+      "projectPath": "C:\\Users\\Jordan\\Desktop\\InvarEngine\\InvarEngine\\InvarEngine.csproj",
       "packagesPath": "C:\\Users\\Jordan\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Jordan\\Desktop\\InvarEngine\\obj\\",
+      "outputPath": "C:\\Users\\Jordan\\Desktop\\InvarEngine\\InvarEngine\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
