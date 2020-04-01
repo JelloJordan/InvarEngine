@@ -10,7 +10,7 @@ namespace InvarEngine
         static void Main(string[] args)
         {
 
-            GameWindow window = new GameWindow(800, 800, GraphicsMode.Default, "Invar Engine Tech Demo");
+            GameWindow window = new GameWindow(1280, 720, GraphicsMode.Default, "Invar Engine Tech Demo");
             Game game = new Game(window);
 
             window.Run();

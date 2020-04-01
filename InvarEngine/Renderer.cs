@@ -39,10 +39,10 @@ namespace InvarEngine
 
         }
 
-        public void Bind()
+        public void Bind(string textureFilePath)
         {
 
-            Texture = ContentPipe.LoadTexture("Icon.png"); //REMOVE LATER, THIS IS DEFAULT TEXTURE
+            Texture = ContentPipe.LoadTexture(textureFilePath); //REMOVE LATER, THIS IS DEFAULT TEXTURE
 
             VBO = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
@@ -61,14 +61,59 @@ namespace InvarEngine
 
         }
 
-        public void Draw()
+        public void Draw(Vector3 CameraRotation)
         {
-
             GL.BindTexture(TextureTarget.Texture2D, Texture.ID);        
 
-            Matrix4 world = Matrix4.CreateTranslation(Parent.Position);
+            Matrix4 projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(80), 1280f/720f, 0.1f, 100.0f); 
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadMatrix(ref projectionMatrix);
+
+            /*
+            Matrix4.CreateRotationX(MathHelper.DegreesToRadians(Parent.Rotation.X)) * 
+            Matrix4.CreateRotationY(MathHelper.DegreesToRadians(Parent.Rotation.Y)) *
+            Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(Parent.Rotation.Z)) * 
+            Matrix4.Identity;
+            */
+
+            Matrix4 viewMatrix =    Matrix4.CreateRotationX(MathHelper.DegreesToRadians(CameraRotation.X)) * 
+                                    Matrix4.CreateRotationY(MathHelper.DegreesToRadians(CameraRotation.Y)) *
+                                    Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(CameraRotation.Z));
+
+            Matrix4 RotationMatrix =    Matrix4.CreateRotationX(MathHelper.DegreesToRadians(Parent.Rotation.X)) * 
+                                        Matrix4.CreateRotationY(MathHelper.DegreesToRadians(Parent.Rotation.Y)) *
+                                        Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(Parent.Rotation.Z));
+
+            Matrix4 modelMatrix =   Matrix4.Identity *
+                                    Matrix4.CreateScale(Parent.Scale, Parent.Scale, Parent.Scale) *
+                                    RotationMatrix * 
+                                    Matrix4.CreateTranslation(Parent.Position) * 
+                                    viewMatrix;
+
+            /*
+            Matrix4 modelMatrix = Matrix4.CreateTranslation(Parent.Position) * 
+            Matrix4.CreateRotationX(MathHelper.DegreesToRadians(CameraRotation.X)) * 
+            Matrix4.CreateRotationY(MathHelper.DegreesToRadians(CameraRotation.Y)) *
+            Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(CameraRotation.Z));
+            */
+
+            /*
+            Matrix4 TransformMatrix =   Matrix4.Identity * 
+                                        Matrix4.CreateScale(Parent.Transform.Scale, Parent.Transform.Scale, Parent.Transform.Scale) *
+                                        RotationMatrix *
+                                        Matrix4.CreateTranslation(Parent.Transform.Position);
+                                */
+
+            //Matrix4 world = Matrix4.CreateTranslation(Parent.Position);
             GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadMatrix(ref world);
+            GL.LoadMatrix(ref modelMatrix);
+
+
+
+
+
+
+
 
             GL.EnableClientState(ArrayCap.ColorArray);
             GL.EnableClientState(ArrayCap.VertexArray);

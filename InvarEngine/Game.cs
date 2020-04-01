@@ -3,6 +3,7 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
+using OpenTK.Input;
 
 namespace InvarEngine
 {
@@ -36,7 +37,10 @@ namespace InvarEngine
         }
 
         void window_Resize(object sender, EventArgs e) //called everytime the window is resized, Stays in a 1:1 ratio
-        {
+        {   
+
+            GL.Viewport(0, 0, window.Width, window.Height);
+            /*
             int NewSize = 0;
             if(window.Width > window.Height)
                 NewSize = window.Height;
@@ -47,7 +51,8 @@ namespace InvarEngine
 
             //Console.WriteLine(window.Height);
 
-            //GL.Viewport((window.Width - NewSize)/2, (window.Height - NewSize)/2, NewSize, NewSize);      //maps the rendered output to the dimensions of the window, might change to lock 1280x720
+            GL.Viewport((window.Width - NewSize)/2, (window.Height - NewSize)/2, NewSize, NewSize);      //maps the rendered output to the dimensions of the window, might change to lock 1280x720
+            */
         }
 
         void window_Load(object sender, EventArgs e)
@@ -57,10 +62,10 @@ namespace InvarEngine
 
 
             Test = new GameObject(new Vector3(0f, 0f, -5f), new Vector3(0f, 0f, 0f), 1f, true);
-            Test.Renderer.Bind();
+            Test.Renderer.Bind("Icon.png");
 
-            Floor = new GameObject(new Vector3(0f, -1f, -2f), new Vector3(0f, 0f, 0f), 1f, true);
-            Floor.Renderer.Bind();
+            Floor = new GameObject(new Vector3(0f, -1f, 0f), new Vector3(90f, 0f, 0f), 10f, true);
+            Floor.Renderer.Bind("Grass.jpg");
 
             /*
             texture = ContentPipe.LoadTexture("Icon.png");
@@ -107,7 +112,19 @@ namespace InvarEngine
         void window_UpdateFrame(object sender, FrameEventArgs e)
         {
 
-          
+            KeyboardState input = Keyboard.GetState();  //gets current keyboard input
+
+            if(input.IsKeyDown(Key.D))
+            {
+                CameraRotation += new Vector3(0f, 1f, 0f);
+            
+            }
+
+            if(input.IsKeyDown(Key.A))
+            {
+                CameraRotation += new Vector3(0f, -1f, 0f);
+            
+            }
 
         }
 
@@ -122,13 +139,11 @@ namespace InvarEngine
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
             //Matrix4 proj = Matrix4.CreateOrthographicOffCenter(0, window.Width, window.Height, 0, 0, 1);
-            Matrix4 projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(80), 1f, 0.1f, 100.0f);
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadMatrix(ref projectionMatrix);
             
             
-            Test.Renderer.Draw();
-            Floor.Renderer.Draw();
+            
+            Test.Renderer.Draw(CameraRotation);
+            Floor.Renderer.Draw(CameraRotation);
             
 
             /*

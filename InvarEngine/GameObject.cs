@@ -63,7 +63,6 @@ namespace InvarEngine
 
         public GameObject(Vector3 Position, Vector3 Rotation, float Scale, bool hasRenderer = true)
         {
-            
 
             this.Position = Position;
             this.Rotation = Rotation;
