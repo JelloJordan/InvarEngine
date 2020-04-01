@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Jordan\\Desktop\\InvarEngine\\invarengine\\InvarEngine.csproj": {}
+    "C:\\Users\\Jordan\\Desktop\\InvarEngine\\InvarEngine\\InvarEngine.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Jordan\\Desktop\\InvarEngine\\invarengine\\InvarEngine.csproj": {
+    "C:\\Users\\Jordan\\Desktop\\InvarEngine\\InvarEngine\\InvarEngine.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Jordan\\Desktop\\InvarEngine\\invarengine\\InvarEngine.csproj",
+        "projectUniqueName": "C:\\Users\\Jordan\\Desktop\\InvarEngine\\InvarEngine\\InvarEngine.csproj",
         "projectName": "InvarEngine",
-        "projectPath": "C:\\Users\\Jordan\\Desktop\\InvarEngine\\invarengine\\InvarEngine.csproj",
+        "projectPath": "C:\\Users\\Jordan\\Desktop\\InvarEngine\\InvarEngine\\InvarEngine.csproj",
         "packagesPath": "C:\\Users\\Jordan\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Jordan\\Desktop\\InvarEngine\\invarengine\\obj\\",
+        "outputPath": "C:\\Users\\Jordan\\Desktop\\InvarEngine\\InvarEngine\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"

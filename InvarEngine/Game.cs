@@ -1,57 +1,26 @@
 using System;
 using OpenTK;
+using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing;
 
 namespace InvarEngine
 {
-
-    struct Vertex
-    {
-        public Vector2 position;
-        public Vector2 texCoord;
-        public Vector4 color;
-
-        public Color Color
-        {
-            get
-            {
-                return Color.FromArgb((int)(255 * color.W), (int)(255 * color.X), (int)(255 * color.Y), (int)(255 * color.Z));
-            }
-            set
-            {
-                this.color = new Vector4(value.R/255f, value.G/255f, value.B/255f, value.A/255f);
-            }
-        }
-
-        public static int SizeInBytes
-        {
-
-            get { return Vector2.SizeInBytes * 2 + Vector4.SizeInBytes; } //update when values get added to vertex struct
-
-        }
-
-        public Vertex(Vector2 position, Vector2 texCoord)
-        {
-
-            this.position = position;
-            this.texCoord = texCoord;
-            this.color = new Vector4(1, 1, 1, 1);
-
-        }
-
-    }
-
     class Game
     {
 
         public GameWindow window;
-        Texture2D texture;
+        //Texture2D texture;
 
-        Vertex[] vertBuffer;
-        int VBO;
-        uint[] indexBuffer;
-        int IBO; //Hold ID for index buffer object
+        //Vertex[] vertBuffer;
+        //int VBO;
+        //uint[] indexBuffer;
+        //int IBO; //Hold ID for index buffer object
+
+        Vector3 CameraRotation = new Vector3(0f, 0f, 0f);
+
+        GameObject Test;
+        GameObject Floor;
 
         public Game(GameWindow windowInput)
         {
@@ -62,7 +31,23 @@ namespace InvarEngine
             window.RenderFrame += window_RenderFrame;
             window.UpdateFrame += window_UpdateFrame;
             window.Closing += window_Closing;
+            window.Resize += window_Resize;
 
+        }
+
+        void window_Resize(object sender, EventArgs e) //called everytime the window is resized, Stays in a 1:1 ratio
+        {
+            int NewSize = 0;
+            if(window.Width > window.Height)
+                NewSize = window.Height;
+            else
+                NewSize = window.Width;
+
+            //Console.WriteLine("Resized");
+
+            //Console.WriteLine(window.Height);
+
+            //GL.Viewport((window.Width - NewSize)/2, (window.Height - NewSize)/2, NewSize, NewSize);      //maps the rendered output to the dimensions of the window, might change to lock 1280x720
         }
 
         void window_Load(object sender, EventArgs e)
@@ -70,19 +55,27 @@ namespace InvarEngine
 
             GL.ClearColor(Color.FromArgb(5, 5, 25));
 
+
+            Test = new GameObject(new Vector3(0f, 0f, -5f), new Vector3(0f, 0f, 0f), 1f, true);
+            Test.Renderer.Bind();
+
+            Floor = new GameObject(new Vector3(0f, -1f, -2f), new Vector3(0f, 0f, 0f), 1f, true);
+            Floor.Renderer.Bind();
+
+            /*
             texture = ContentPipe.LoadTexture("Icon.png");
 
             
-            vertBuffer = new Vertex[6]
+            vertBuffer = new Vertex[4]
             {
                 //new Vertex(new Vector2(0,0), new Vector2(0,0)) {Color = Color.Red},  if wanting to set color or other vars
-                new Vertex(new Vector2(0,0), new Vector2(0,0)),
-                new Vertex(new Vector2(100,0), new Vector2(1,0)),
-                new Vertex(new Vector2(100,100), new Vector2(1,1)),
-                new Vertex(new Vector2(0,100), new Vector2(0,1)),
+                new Vertex(new Vector2(-.5f, -.5f), new Vector2(0,1)),
+                new Vertex(new Vector2(-.5f,  .5f), new Vector2(0,0)),
+                new Vertex(new Vector2( .5f,  .5f), new Vector2(1,0)),
+                new Vertex(new Vector2( .5f, -.5f), new Vector2(1,1))
 
-                new Vertex(new Vector2(0,200), new Vector2(0,0)),
-                new Vertex(new Vector2(100,200), new Vector2(1,0))
+                //new Vertex(new Vector2(-.5f,   1f), new Vector2(0,0)),
+                //new Vertex(new Vector2( .5f,   1f), new Vector2(0,0))
             };
 
             VBO = GL.GenBuffer();
@@ -90,17 +83,17 @@ namespace InvarEngine
             GL.BufferData<Vertex>(BufferTarget.ArrayBuffer, (IntPtr)(Vertex.SizeInBytes * vertBuffer.Length), vertBuffer, BufferUsageHint.StaticDraw);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
-            indexBuffer = new uint[8]       //8 size for room for two quads
+            indexBuffer = new uint[4]       //8 size for room for two quads
             {
-                0, 1, 2, 3,     //right side up quad
+                0, 1, 2, 3     //right side up quad
 
-                4, 5, 2, 3      //upsidedown quad
+                //4, 5, 1, 2      //upsidedown quad
             };
 
             IBO = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBO);
             GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(sizeof(uint) * indexBuffer.Length), indexBuffer, BufferUsageHint.StaticDraw);
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, 0);*/
 
         }
 
@@ -128,13 +121,15 @@ namespace InvarEngine
             GL.Enable(EnableCap.Texture2D);
             GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
 
-            Matrix4 proj = Matrix4.CreateOrthographicOffCenter(0, window.Width, window.Height, 0, 0, 1);
+            //Matrix4 proj = Matrix4.CreateOrthographicOffCenter(0, window.Width, window.Height, 0, 0, 1);
+            Matrix4 projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(80), 1f, 0.1f, 100.0f);
             GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadMatrix(ref proj);
+            GL.LoadMatrix(ref projectionMatrix);
             
             
-
-            GL.BindTexture(TextureTarget.Texture2D, texture.ID);
+            Test.Renderer.Draw();
+            Floor.Renderer.Draw();
+            
 
             /*
             GL.Begin(PrimitiveType.Quads);
@@ -164,7 +159,13 @@ namespace InvarEngine
             
             //GL.DrawArrays(PrimitiveType.Quads, 0, vertBuffer.Length/2);       //Draw it
 
-            Matrix4 world = Matrix4.CreateTranslation(100, 100, 0);
+
+            //WORKING CODE----------------------------------------------
+
+            /*
+            GL.BindTexture(TextureTarget.Texture2D, texture.ID);        
+
+            Matrix4 world = Matrix4.CreateTranslation(0, 0, -5);
             GL.MatrixMode(MatrixMode.Modelview);
             GL.LoadMatrix(ref world);
 
@@ -178,7 +179,11 @@ namespace InvarEngine
             GL.ColorPointer(4, ColorPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector2.SizeInBytes * 2));
 
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBO);
-            GL.DrawElements(PrimitiveType.Quads, indexBuffer.Length, DrawElementsType.UnsignedInt, 0);      //6 vertices but 2 quads
+            GL.DrawElements(PrimitiveType.Quads, indexBuffer.Length, DrawElementsType.UnsignedInt, 0);      //6 vertices but 2 quads 
+
+            */
+            //----------------------------------------------
+
 
             //GL.DrawArrays(PrimitiveType.Quads, 0, vertBuffer.Length);
 
