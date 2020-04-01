@@ -8,7 +8,7 @@ namespace InvarEngine
 
     struct Vertex
     {
-        public Vector2 position;
+        public Vector3 position;
         public Vector2 texCoord;
         public Vector4 color;
 
@@ -27,11 +27,11 @@ namespace InvarEngine
         public static int SizeInBytes
         {
 
-            get { return Vector2.SizeInBytes * 2 + Vector4.SizeInBytes; } //update when values get added to vertex struct
+            get { return Vector2.SizeInBytes + Vector3.SizeInBytes + Vector4.SizeInBytes; } //update when values get added to vertex struct
 
         }
 
-        public Vertex(Vector2 position, Vector2 texCoord)
+        public Vertex(Vector3 position, Vector2 texCoord)
         {
 
             this.position = position;

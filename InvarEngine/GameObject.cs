@@ -69,16 +69,10 @@ namespace InvarEngine
             this.Scale = Scale;
             this.hasRenderer = hasRenderer;
 
-            Vertex[] tempDefaultMesh = new Vertex[4]    //QUAD --REMOVE LATER
-            {
-                new Vertex(new Vector2(-.5f, -.5f), new Vector2(0,1)),
-                new Vertex(new Vector2(-.5f,  .5f), new Vector2(0,0)),
-                new Vertex(new Vector2( .5f,  .5f), new Vector2(1,0)),
-                new Vertex(new Vector2( .5f, -.5f), new Vector2(1,1))
-            };
+            
 
             if(hasRenderer)
-                Renderer = new Renderer(tempDefaultMesh, this);
+                Renderer = new Renderer(this);
             
         } 
     }

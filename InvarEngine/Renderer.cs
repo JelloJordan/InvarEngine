@@ -12,6 +12,7 @@ namespace InvarEngine
         GameObject Parent;
         Vertex[] Mesh;
         Texture2D texture;
+        OBJ Model;
 
         public Texture2D Texture
         {
@@ -31,29 +32,47 @@ namespace InvarEngine
         uint[] indexBuffer;
         int IBO;
 
-        public Renderer(Vertex[] Mesh, GameObject Parent)
+        public Renderer(GameObject Parent)
         {
-
-            this.Mesh = Mesh;
             this.Parent = Parent;
-
         }
 
-        public void Bind(string textureFilePath) //string modelFilePath
+        public void Bind(string modelFilePath, string textureFilePath) //string modelFilePath
         {
 
             Texture = ContentPipe.LoadTexture(textureFilePath); //REMOVE LATER, THIS IS DEFAULT TEXTURE
-            //Model = Contentpipe.LoadOBJ(modelFilePath);
+            Model = ContentPipe.LoadOBJ(modelFilePath, 1f);
+
+            Mesh = Model.Mesh;
+
+            //Console.WriteLine(Mesh.Length);
+
+            //Console.WriteLine(Model.Mesh[0].position);
+
+            /*Mesh = new Vertex[4]    //QUAD --REMOVE LATER
+            {
+                new Vertex(new Vector3(-.5f, -.5f, 0f), new Vector2(0,1)),
+                new Vertex(new Vector3(-.5f,  .5f, 0f), new Vector2(0,0)),
+                new Vertex(new Vector3( .5f,  .5f, 0f), new Vector2(1,0)),
+                new Vertex(new Vector3( .5f, -.5f, 0f), new Vector2(1,1))
+            };*/
 
             VBO = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
             GL.BufferData<Vertex>(BufferTarget.ArrayBuffer, (IntPtr)(Vertex.SizeInBytes * Mesh.Length), Mesh, BufferUsageHint.StaticDraw);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
-            indexBuffer = new uint[4]       //8 size for room for two quads, pass these later on
+            indexBuffer = Model.Indices;
+
+            //Console.WriteLine(indexBuffer.Length);
+
+            //Console.WriteLine(Model.Indices[0]);
+            
+            /*indexBuffer = new uint[6]       //6 size for room for two tris, pass these later on
             {
-                0, 1, 2, 3     //right side up quad
-            };
+                0, 1, 2,
+                3, 0, 2
+            };*/
 
             IBO = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBO);
@@ -123,12 +142,12 @@ namespace InvarEngine
             GL.EnableClientState(ArrayCap.TextureCoordArray);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.VertexPointer(2, VertexPointerType.Float, Vertex.SizeInBytes, (IntPtr)0);
-            GL.TexCoordPointer(2, TexCoordPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector2.SizeInBytes * 1));
-            GL.ColorPointer(4, ColorPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector2.SizeInBytes * 2));
+            GL.VertexPointer(3, VertexPointerType.Float, Vertex.SizeInBytes, (IntPtr)0);
+            GL.TexCoordPointer(2, TexCoordPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes));
+            GL.ColorPointer(4, ColorPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes + Vector2.SizeInBytes));
 
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBO);        //DRAW WITH TRIS LATER
-            GL.DrawElements(PrimitiveType.Quads, indexBuffer.Length, DrawElementsType.UnsignedInt, 0);      //6 vertices but 2 quads 
+            GL.DrawElements(PrimitiveType.Triangles, indexBuffer.Length, DrawElementsType.UnsignedInt, 0);      //6 vertices but 2 quads 
 
         }
         

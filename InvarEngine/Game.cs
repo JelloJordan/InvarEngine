@@ -70,6 +70,7 @@ namespace InvarEngine
 
         GameObject Test;
         GameObject Floor;
+        GameObject Monkey;
 
         float MouseSensitivity = 0.2f;
 
@@ -111,11 +112,14 @@ namespace InvarEngine
             GL.ClearColor(Color.FromArgb(5, 5, 25));
 
 
-            Test = new GameObject(new Vector3(0f, 0f, -5f), new Vector3(0f, 0f, 0f), 1f, true);
-            Test.Renderer.Bind("Icon.png");
+            Test = new GameObject(new Vector3(0f, 0f, -5f), new Vector3(90f, 0f, 0f), .5f, true);
+            Test.Renderer.Bind("Cube.obj", "Icon.png");
 
-            Floor = new GameObject(new Vector3(0f, -1f, 0f), new Vector3(90f, 0f, 0f), 10f, true);
-            Floor.Renderer.Bind("Grass.jpg");
+            Floor = new GameObject(new Vector3(0f, -1f, 0f), new Vector3(0f, 0f, 0f), 5f, true);
+            Floor.Renderer.Bind("Quad.obj", "Grass.jpg");
+
+            Monkey = new GameObject(new Vector3(-5f, 0f, 0f), new Vector3(0f, 90f, 0f), .5f, true);
+            Monkey.Renderer.Bind("Monkey.obj", "uv.png");
 
             /*
             texture = ContentPipe.LoadTexture("Icon.png");
@@ -247,6 +251,7 @@ namespace InvarEngine
             
             Floor.Renderer.Draw(Camera);
             Test.Renderer.Draw(Camera);
+            Monkey.Renderer.Draw(Camera);
 
             //Console.WriteLine(window.RenderFrequency);
             

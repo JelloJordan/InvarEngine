@@ -64,70 +64,105 @@ namespace InvarEngine
             string TotalContents = reader.ReadToEnd();
             string[] Lines = TotalContents.Split('\n');
 
-            List<Vector3> VertList = new List<Vector3>();
+            List<Vector2> UV = new List<Vector2>();
+            for(int i = 0; i < Lines.Length - 1; i++)
+            {
+                if(Lines[i][0] == 'v' && Lines[i][1] == 't')
+                {
+        
+                    string[] Points = Lines[i].Split(' '); 
+                   
+                    UV.Add(new Vector2(float.Parse(Points[1]), float.Parse(Points[2])));
+
+        
 
 
+                }
+            }//--UVS DONE ---
+
+            List<Vertex> VertList = new List<Vertex>();
             for(int i = 0; i < Lines.Length - 1; i++)
             {
 
-                //Console.Write(Lines[i] + "\n");
-                //Console.Write("Index Number : " + i + "\n");
               
                 if(Lines[i][0] == 'v' && Lines[i][1] == ' ')
                 {
-                    
-
-
-
+        
                     string[] Points = Lines[i].Split(' '); 
+
+                    Vector2 uvPoint = UV[VertList.Count];
                    
-                    
-
-                    /*string[] Points = new string[4]
-                    {
-                        "v",
-                        "1",
-                        "1",
-                        "1"
-                    };*/
-                    
-                    //Console.Write("Points : " + Points[1] + " " + "\n");
-                    /*Console.Write("(" + 
-                    Points[1] + ", " + 
-                    Points[2] + ", " + 
-                    Points[3] + 
-                    "\n");*/
-
-                    VertList.Add(new Vector3
+                    VertList.Add(new Vertex(new Vector3
                     (
                     float.Parse(Points[1]) * ImportScale,
                     float.Parse(Points[2]) * ImportScale,
                     float.Parse(Points[3]) * ImportScale
-                    ));
-
-                    //Console.Write("Converted to : " + VertList[i] + "\n");
+                    ), uvPoint));
 
                 }
                 
+                
 
-            }
+            } //Vertices Finished
 
-            
+            List<uint> IndList = new List<uint>();
 
-            Vector3[] Vertices = new Vector3[VertList.Count];
-
-            for(int i = 0; i < VertList.Count; i++)
+            for(int i = 0; i < Lines.Length - 1; i++)
             {
-                Vertices[i] = VertList[i];
+
+                if(Lines[i][0] == 'f')
+                {
+
+                    string[] Points = Lines[i].Split(' '); 
+
+                    string[] first = Points[1].Split('/');
+                    string[] second = Points[2].Split('/');
+                    string[] third = Points[3].Split('/');
+    
+
+                    //Console.Write(Points[1] + "\n");
+                    IndList.Add(Convert.ToUInt32(first[0]) - 1);
+                    IndList.Add(Convert.ToUInt32(second[0]) - 1);
+                    IndList.Add(Convert.ToUInt32(third[0]) - 1);
+
+                    //Console.Write(first[0] + "/" + second[0] + "/" + third[0] + "\n");
+
+
+                    
+
+                }
+
+            } // INDICES FINSIHED
+
+            //(rand() % (max- min)) + min
+
+            //Vertex[] Verts = new Vertex[VertList.Count];
+            //Verts = new Vertex[VertList.Count];
+
+            //List
+            /*
+            
+            for(int i = 0; i < VertList.Count; i++)
+            {   
+                Verts[i].position = VertList[i];
+                Verts[i].texCoord = new Vector2(0f, 0f);
+
+                //Console.WriteLine(Verts[i].position);
             }
+            */
+            uint[] Indices = new uint[IndList.Count];
+
+            //Console.WriteLine(IndList.Count);
+
+            for(int i = 0; i < IndList.Count; i++)
+            {
+                //Console.WriteLine(IndList[i]);
+                Indices[i] = IndList[i];
+            }
+
+            return new OBJ(VertList.ToArray(), Indices);
 
       
-
-
-
-
-
-            throw new NotImplementedException();
 
         }
 
