@@ -1,6 +1,7 @@
 using System;
 using System.IO;
 using System.Drawing;
+using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System.Drawing.Imaging;
@@ -44,6 +45,89 @@ namespace InvarEngine
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, pixelated ? (int)TextureMagFilter.Nearest : (int)TextureMagFilter.Linear);
 
             return new Texture2D(id, new Vector2(bmp.Width, bmp.Height));
+
+        }
+
+        public static OBJ LoadOBJ(string filePath, float ImportScale ,bool ImportNormals = false)
+        {
+
+            filePath = "Content/" + filePath;
+
+            if(!File.Exists(filePath))
+            {
+
+                throw new Exception("File does not exist at '" + filePath + "'");
+
+            }
+
+            StreamReader reader = new StreamReader(filePath);
+            string TotalContents = reader.ReadToEnd();
+            string[] Lines = TotalContents.Split('\n');
+
+            List<Vector3> VertList = new List<Vector3>();
+
+
+            for(int i = 0; i < Lines.Length - 1; i++)
+            {
+
+                //Console.Write(Lines[i] + "\n");
+                //Console.Write("Index Number : " + i + "\n");
+              
+                if(Lines[i][0] == 'v' && Lines[i][1] == ' ')
+                {
+                    
+
+
+
+                    string[] Points = Lines[i].Split(' '); 
+                   
+                    
+
+                    /*string[] Points = new string[4]
+                    {
+                        "v",
+                        "1",
+                        "1",
+                        "1"
+                    };*/
+                    
+                    //Console.Write("Points : " + Points[1] + " " + "\n");
+                    /*Console.Write("(" + 
+                    Points[1] + ", " + 
+                    Points[2] + ", " + 
+                    Points[3] + 
+                    "\n");*/
+
+                    VertList.Add(new Vector3
+                    (
+                    float.Parse(Points[1]) * ImportScale,
+                    float.Parse(Points[2]) * ImportScale,
+                    float.Parse(Points[3]) * ImportScale
+                    ));
+
+                    //Console.Write("Converted to : " + VertList[i] + "\n");
+
+                }
+                
+
+            }
+
+            
+
+            Vector3[] Vertices = new Vector3[VertList.Count];
+
+            for(int i = 0; i < VertList.Count; i++)
+            {
+                Vertices[i] = VertList[i];
+            }
+
+      
+
+
+
+
+
+            throw new NotImplementedException();
 
         }
 

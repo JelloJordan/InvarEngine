@@ -7,6 +7,51 @@ using OpenTK.Input;
 
 namespace InvarEngine
 {
+    struct Camera
+    {
+
+        Vector3 position;
+        Vector3 rotation;
+        float fov;
+
+        public Vector3 Position
+        {
+            get
+            {
+                return position;
+            }
+            set
+            {
+                position = value;
+            }
+        }
+
+        public Vector3 Rotation
+        {
+            get
+            {
+                return rotation;
+            }
+            set
+            {
+                rotation = value;
+            }
+        }
+
+        public float FOV
+        {
+            get
+            {
+                return fov;
+            }
+            set
+            {
+                fov = value;
+            }
+        }
+
+    }
+
     class Game
     {
 
@@ -18,10 +63,15 @@ namespace InvarEngine
         //uint[] indexBuffer;
         //int IBO; //Hold ID for index buffer object
 
-        Vector3 CameraRotation = new Vector3(0f, 0f, 0f);
+        Camera Camera;
+
+        //Vector3 CameraRotation = new Vector3(0f, 0f, 0f);
+        //Vector3 CameraPosition = new Vector3(0f, 0f, 0f);
 
         GameObject Test;
         GameObject Floor;
+
+        float MouseSensitivity = 0.2f;
 
         public Game(GameWindow windowInput)
         {
@@ -112,18 +162,72 @@ namespace InvarEngine
         void window_UpdateFrame(object sender, FrameEventArgs e)
         {
 
-            KeyboardState input = Keyboard.GetState();  //gets current keyboard input
+            KeyboardState Keyboardinput = Keyboard.GetState();  //gets current keyboard input
+            MouseState Mouseinput = Mouse.GetCursorState();
+            window.CursorVisible = false;
 
-            if(input.IsKeyDown(Key.D))
-            {
-                CameraRotation += new Vector3(0f, 1f, 0f);
+            float XDelta = (window.Location.X + window.Width/2) - Mouseinput.X;
+            float YDelta = (window.Location.Y + window.Height/2) - Mouseinput.Y;
+
+            Mouse.SetPosition(window.Location.X + window.Width/2f, window.Location.Y + window.Height/2f);
+
+            Camera.Rotation += new Vector3(-YDelta, -XDelta, 0f) * MouseSensitivity;
+            if(Camera.Rotation.X < -70f)
+                Camera.Rotation = new Vector3(-70f, Camera.Rotation.Y, 0f);
             
+            if(Camera.Rotation.X > 70f)
+                Camera.Rotation = new Vector3(70f, Camera.Rotation.Y, 0f);
+            
+            
+
+            /*
+            if(Keyboardinput.IsKeyDown(Key.D))
+            {   
+                if(Camera.Rotation.Y >= 359)
+                    Camera.Rotation = new Vector3(Camera.Rotation.X, 0, Camera.Rotation.Z);
+                else
+                    Camera.Rotation += new Vector3(0f, 1f, 0f);
             }
 
-            if(input.IsKeyDown(Key.A))
+            if(Keyboardinput.IsKeyDown(Key.A))
             {
-                CameraRotation += new Vector3(0f, -1f, 0f);
-            
+                if(Camera.Rotation.Y <= 0)
+                    Camera.Rotation = new Vector3(Camera.Rotation.X, 359, Camera.Rotation.Z);
+                else
+                    Camera.Rotation += new Vector3(0f, -1f, 0f);
+            }*/
+
+            if(Keyboardinput.IsKeyDown(Key.W))
+            {
+                Camera.Position += VectorTools.GetForward(Camera.Rotation) * 0.05f;
+            }
+
+            if(Keyboardinput.IsKeyDown(Key.A))
+            {
+                Camera.Position += VectorTools.GetForward(Camera.Rotation + new Vector3(0f, -90f, 0f)) * 0.05f;
+            }
+
+            if(Keyboardinput.IsKeyDown(Key.D))
+            {
+                Camera.Position += VectorTools.GetForward(Camera.Rotation + new Vector3(0f, 90f, 0f)) * 0.05f;
+            }
+
+            if(Keyboardinput.IsKeyDown(Key.S))
+            {
+                Camera.Position += VectorTools.GetForward(Camera.Rotation) * -0.05f;
+            }
+
+            if(Keyboardinput.IsKeyDown(Key.Escape))
+            {
+                window.Exit();
+            }
+
+            if(Keyboardinput.IsKeyDown(Key.F11))
+            {
+                window.Location = new Point(0, 0);
+                //window.Size = new Size(DisplayDevice.Default.Width, DisplayDevice.Default.Height);
+                window.Size = new Size(1920, 1080);
+                GL.Viewport(0, 0, window.Width, window.Height);
             }
 
         }
@@ -141,9 +245,11 @@ namespace InvarEngine
             //Matrix4 proj = Matrix4.CreateOrthographicOffCenter(0, window.Width, window.Height, 0, 0, 1);
             
             
+            Floor.Renderer.Draw(Camera);
+            Test.Renderer.Draw(Camera);
+
+            //Console.WriteLine(window.RenderFrequency);
             
-            Test.Renderer.Draw(CameraRotation);
-            Floor.Renderer.Draw(CameraRotation);
             
 
             /*

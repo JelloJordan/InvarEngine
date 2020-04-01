@@ -21,3 +21,11 @@ namespace InvarEngine
 }
 
 //dotnet run
+
+/*
+-------TODO------
+
+Swap to using TRI's instead of quads, test with cube mesh
+OBJ Importer needs to work with Vertices, Indices, Texture Coordinates, and Normals
+
+*/

@@ -39,10 +39,11 @@ namespace InvarEngine
 
         }
 
-        public void Bind(string textureFilePath)
+        public void Bind(string textureFilePath) //string modelFilePath
         {
 
             Texture = ContentPipe.LoadTexture(textureFilePath); //REMOVE LATER, THIS IS DEFAULT TEXTURE
+            //Model = Contentpipe.LoadOBJ(modelFilePath);
 
             VBO = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
@@ -61,7 +62,7 @@ namespace InvarEngine
 
         }
 
-        public void Draw(Vector3 CameraRotation)
+        public void Draw(Camera Camera)
         {
             GL.BindTexture(TextureTarget.Texture2D, Texture.ID);        
 
@@ -76,9 +77,10 @@ namespace InvarEngine
             Matrix4.Identity;
             */
 
-            Matrix4 viewMatrix =    Matrix4.CreateRotationX(MathHelper.DegreesToRadians(CameraRotation.X)) * 
-                                    Matrix4.CreateRotationY(MathHelper.DegreesToRadians(CameraRotation.Y)) *
-                                    Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(CameraRotation.Z));
+            Matrix4 viewMatrix =     
+                                    Matrix4.CreateRotationY(MathHelper.DegreesToRadians(Camera.Rotation.Y)) *
+                                    Matrix4.CreateRotationX(MathHelper.DegreesToRadians(Camera.Rotation.X)) *
+                                    Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(Camera.Rotation.Z));
 
             Matrix4 RotationMatrix =    Matrix4.CreateRotationX(MathHelper.DegreesToRadians(Parent.Rotation.X)) * 
                                         Matrix4.CreateRotationY(MathHelper.DegreesToRadians(Parent.Rotation.Y)) *
@@ -88,6 +90,7 @@ namespace InvarEngine
                                     Matrix4.CreateScale(Parent.Scale, Parent.Scale, Parent.Scale) *
                                     RotationMatrix * 
                                     Matrix4.CreateTranslation(Parent.Position) * 
+                                    Matrix4.CreateTranslation(Camera.Position) *
                                     viewMatrix;
 
             /*
@@ -124,7 +127,7 @@ namespace InvarEngine
             GL.TexCoordPointer(2, TexCoordPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector2.SizeInBytes * 1));
             GL.ColorPointer(4, ColorPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector2.SizeInBytes * 2));
 
-            GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBO);
+            GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBO);        //DRAW WITH TRIS LATER
             GL.DrawElements(PrimitiveType.Quads, indexBuffer.Length, DrawElementsType.UnsignedInt, 0);      //6 vertices but 2 quads 
 
         }
