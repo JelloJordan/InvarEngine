@@ -84,5 +84,13 @@ namespace InvarEngine
            }catch{}
             
         }
+
+        public void SetVector3(string name, Vector3 data)
+        {
+            try{
+                GL.UseProgram(Handle);
+                GL.Uniform3(_uniformLocations[name], ref data);
+            }catch{}
+        }
     }
 }

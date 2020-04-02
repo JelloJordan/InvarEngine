@@ -80,6 +80,7 @@ namespace InvarEngine
 
             List<uint> IndList = new List<uint>();
             List<int> UVOrder = new List<int>();
+            List<int> NormalOrder = new List<int>();
 
             for(int i = 0; i < Lines.Length - 1; i++)
             {
@@ -98,6 +99,10 @@ namespace InvarEngine
                     UVOrder.Add(Convert.ToInt32(first[1]) - 1);
                     UVOrder.Add(Convert.ToInt32(second[1]) - 1);
                     UVOrder.Add(Convert.ToInt32(third[1]) - 1);
+
+                    NormalOrder.Add(Convert.ToInt32(first[2]) - 1);
+                    NormalOrder.Add(Convert.ToInt32(second[2]) - 1);
+                    NormalOrder.Add(Convert.ToInt32(third[2]) - 1);
                 }
             }// ----------INDICES FINSIHED----------
 
@@ -111,6 +116,16 @@ namespace InvarEngine
                 }
             }//----------UVS FINSIHED----------
 
+            List<Vector3> Normals = new List<Vector3>();
+            for(int i = 0; i < Lines.Length - 1; i++)
+            {
+                if(Lines[i][0] == 'v' && Lines[i][1] == 'n')
+                {
+                    string[] Points = Lines[i].Split(' '); 
+                    Normals.Add(new Vector3(float.Parse(Points[1]), float.Parse(Points[2]), float.Parse(Points[3])));
+                }
+            }//----------NORMALS FINSIHED----------
+
             List<Vertex> VertList = new List<Vertex>();
             for(int i = 0; i < Lines.Length - 1; i++)
             {
@@ -118,18 +133,24 @@ namespace InvarEngine
                 {
                     string[] Points = Lines[i].Split(' '); 
 
+                    Vector3 normalPoint = Vector3.Zero;
+                    for(int j = 0; j < IndList.Count; j++)
+                    {
+                        if(IndList[j] == VertList.Count)
+                        {
+                            normalPoint = Normals[NormalOrder[j]];
+                            break;
+                        }
+                    }
+
                     Vector2 uvPoint = Vector2.Zero;
                     for(int j = 0; j < IndList.Count; j++)
                     {
-
                         if(IndList[j] == VertList.Count)
                         {
-                            
                             uvPoint = UV[UVOrder[j]];
-                            //Console.WriteLine((VertList.Count + 1) + "/" + (UVOrder[j] + 1) + "/0");
                             break;
                         }
-
                     }
                     
                     
@@ -138,7 +159,7 @@ namespace InvarEngine
                     float.Parse(Points[1]) * ImportScale,
                     float.Parse(Points[2]) * ImportScale,
                     float.Parse(Points[3]) * ImportScale
-                    ), uvPoint));
+                    ), uvPoint, normalPoint));
                 }
             }//----------VERTICES FINSIHED----------
             

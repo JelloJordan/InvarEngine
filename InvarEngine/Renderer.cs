@@ -53,6 +53,9 @@ namespace InvarEngine
             }
 
             Shader = new ShaderProgram("Shader/Shader.vert", "Shader/Shader.frag");
+
+            Shader.SetVector3("lightPosition", new Vector3(0f,5f,0f));
+            Shader.SetVector3("lightColor", new Vector3(.1f,.1f,.1f));
             
 
             Mesh = Model.Mesh;
@@ -69,9 +72,7 @@ namespace InvarEngine
         }
 
         public void Draw(Camera Camera)
-        {
-            GL.BindTexture(TextureTarget.Texture2D, Texture.ID);        
-
+        {   
             Matrix4 projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(80), 1280f/720f, 0.1f, 100.0f); 
 
             Matrix4 viewMatrix =     
@@ -93,33 +94,34 @@ namespace InvarEngine
             Shader.SetMatrix4("View", viewMatrix);
             Shader.SetMatrix4("Projection", projectionMatrix);
 
+            GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, Texture.ID);     
+
             GL.EnableClientState(ArrayCap.ColorArray);
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.EnableClientState(ArrayCap.TextureCoordArray);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false,Vertex.SizeInBytes, (IntPtr)0);
+
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false,Vertex.SizeInBytes, (IntPtr)0);           //VERTICE POSITIONS
             GL.EnableVertexAttribArray(0);
-            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false,Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes));
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false,Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes));   //TEXTURE COORDINATES
             GL.EnableVertexAttribArray(1);
-            GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false,Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes + Vector2.SizeInBytes));
+            GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false,Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes + Vector2.SizeInBytes));  //COLOR IN VECTOR4
             GL.EnableVertexAttribArray(2);
-            //GL.VertexPointer(3, VertexPointerType.Float, Vertex.SizeInBytes, (IntPtr)0);
-            //GL.TexCoordPointer(2, TexCoordPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes));
-            //GL.ColorPointer(4, ColorPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes + Vector2.SizeInBytes));
+            GL.VertexAttribPointer(3, 3, VertexAttribPointerType.Float, false,Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes + Vector2.SizeInBytes + Vector4.SizeInBytes));  //NORMALS IN VECTOR3
+            GL.EnableVertexAttribArray(3);
 
             Shader.Use();
  
-
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBO);      
             GL.DrawElements(PrimitiveType.Triangles, indexBuffer.Length, DrawElementsType.UnsignedInt, 0);   
 
             GL.DisableVertexAttribArray(0);
             GL.DisableVertexAttribArray(1);
             GL.DisableVertexAttribArray(2);
-
+            GL.DisableVertexAttribArray(3);
 
         }
-        
     }
 }

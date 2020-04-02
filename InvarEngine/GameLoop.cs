@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -15,6 +16,9 @@ namespace InvarEngine
 
         GameObject Test;
         GameObject Floor;
+        GameObject Sphere;
+
+        List<GameObject> AllObjects;
 
         float MouseSensitivity = 0.2f;
 
@@ -25,11 +29,14 @@ namespace InvarEngine
 
         public void Start()
         {
-            Test = new GameObject(new Vector3(0f, 0f, -5f), new Vector3(90f, 0f, 0f), .5f, true);
+            Test = new GameObject(new Vector3(0f, 0f, -5f), new Vector3(0f, 0f, 180f), .5f, true);
             Test.Renderer.Bind("Cube.obj", "Icon.png");
 
             Floor = new GameObject(new Vector3(0f, -1f, 0f), new Vector3(0f, 0f, 0f), 5f, true);
             Floor.Renderer.Bind("Quad.obj", "Grass.jpg");
+
+            Sphere = new GameObject(new Vector3(-5f, 0f, 0f), new Vector3(0f, 0f, 0f), 1f, true);
+            Sphere.Renderer.Bind("Sphere.obj", "Grass.jpg");
         }
 
         public void Update()
@@ -44,6 +51,7 @@ namespace InvarEngine
         {
             Floor.Renderer.Draw(Camera);
             Test.Renderer.Draw(Camera);
+            Sphere.Renderer.Draw(Camera);
         }
 
         void PlayerMovement(KeyboardState Keyboardinput, MouseState Mouseinput)
