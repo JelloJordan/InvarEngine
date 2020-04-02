@@ -57,6 +57,8 @@ namespace InvarEngine
             Shader.SetVector3("lightPosition", new Vector3(0f,5f,0f));
             Shader.SetVector3("lightColor", new Vector3(.1f,.1f,.1f));
             
+            
+            
 
             Mesh = Model.Mesh;
             VBO = GL.GenBuffer();
@@ -92,10 +94,7 @@ namespace InvarEngine
 
             Shader.SetMatrix4("Model", modelMatrix);
             Shader.SetMatrix4("View", viewMatrix);
-            Shader.SetMatrix4("Projection", projectionMatrix);
-
-            GL.ActiveTexture(TextureUnit.Texture0);
-            GL.BindTexture(TextureTarget.Texture2D, Texture.ID);     
+            Shader.SetMatrix4("Projection", projectionMatrix); 
 
             GL.EnableClientState(ArrayCap.ColorArray);
             GL.EnableClientState(ArrayCap.VertexArray);
@@ -112,6 +111,9 @@ namespace InvarEngine
             GL.VertexAttribPointer(3, 3, VertexAttribPointerType.Float, false,Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes + Vector2.SizeInBytes + Vector4.SizeInBytes));  //NORMALS IN VECTOR3
             GL.EnableVertexAttribArray(3);
 
+            //GL.ActiveTexture(TextureUnit.Texture0);
+            GL.BindTexture(TextureTarget.Texture2D, Texture.ID);    
+            
             Shader.Use();
  
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBO);      
@@ -121,6 +123,8 @@ namespace InvarEngine
             GL.DisableVertexAttribArray(1);
             GL.DisableVertexAttribArray(2);
             GL.DisableVertexAttribArray(3);
+
+            GL.BindTexture(TextureTarget.Texture2D, 0);
 
         }
     }

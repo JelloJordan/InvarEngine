@@ -1,0 +1,8 @@
+pos 0 0 -5 0 0 180 .5
+mod Cube.obj Icon.png
+
+pos 0 -1 0 0 0 0 5
+mod Quad.obj Grass.jpg
+
+pos -5 0 0 0 0 0 1
+mod Sphere.obj Grass.jpg

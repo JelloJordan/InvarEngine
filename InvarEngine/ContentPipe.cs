@@ -40,17 +40,28 @@ namespace InvarEngine
             BitmapData data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             int id = GL.GenTexture();
+            
+            
+            //GL.TexParameter(TextureTarget.Texture2D, GL.TextureMinFilter, )
+
+            GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, id);
+            //GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmp.Width, bmp.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
 
             bmp.UnlockBits(data);
+
+            //GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
+            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMaxLod, 0f);
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, pixelated ? (int)TextureMinFilter.Nearest : (int)TextureMinFilter.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, pixelated ? (int)TextureMagFilter.Nearest : (int)TextureMagFilter.Linear);
 
             //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (float)TextureWrapMode.Repeat);
             //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (float)TextureWrapMode.Repeat);
+
+            GL.BindTexture(TextureTarget.Texture2D, 0);
 
             return new Texture2D(id, new Vector2(bmp.Width, bmp.Height));
 
@@ -164,6 +175,55 @@ namespace InvarEngine
             }//----------VERTICES FINSIHED----------
             
             return new OBJ(VertList.ToArray(), IndList.ToArray()){ERROR = ERROR};
+        }
+
+        public static List<GameObject> LoadScene(string filePath)
+        {
+            filePath = "Scenes/" + filePath;
+
+            if(!File.Exists(filePath))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("ERROR : Filename '" + filePath + "' not found!");
+                Console.ResetColor();
+                return new List<GameObject>();
+            }
+
+            StreamReader reader = new StreamReader(filePath);
+            string TotalContents = reader.ReadToEnd();
+            string[] Lines = TotalContents.Split('\n');
+
+            List<GameObject> AllObjects = new List<GameObject>();
+
+            float xOffset = 0;
+
+            for(int j = 0; j < 10; j++)
+            {
+                
+            for(int i = 0; i < Lines.Length - 1; i++)
+            {
+                if(Lines[i][0] == 'p')
+                {
+                    string[] Vectors = Lines[i].Split(' '); 
+
+                    GameObject Object = new GameObject
+                    (
+                        new Vector3(float.Parse(Vectors[1]) + xOffset, float.Parse(Vectors[2]), float.Parse(Vectors[3])), 
+                        new Vector3(float.Parse(Vectors[4]), float.Parse(Vectors[5]), float.Parse(Vectors[6])), 
+                        float.Parse(Vectors[7])
+                    );
+
+                    string[] Paths = Lines[i + 1].Split(' ');
+
+                    Object.Renderer.Bind(Paths[1], Paths[2]);
+
+                    AllObjects.Add(Object);
+                }
+            }
+                xOffset += 10f;
+            }
+
+            return AllObjects;
         }
     }
 }

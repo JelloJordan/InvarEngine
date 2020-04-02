@@ -59,21 +59,29 @@ namespace InvarEngine
             }
         }
 
-        bool hasRenderer;
-
-        public GameObject(Vector3 Position, Vector3 Rotation, float Scale, bool hasRenderer = true)
+        public GameObject(Vector3 Position, Vector3 Rotation, float Scale)
         {
 
             this.Position = Position;
             this.Rotation = Rotation;
             this.Scale = Scale;
-            this.hasRenderer = hasRenderer;
 
-            
-
-            if(hasRenderer)
-                Renderer = new Renderer(this);
+            Renderer = new Renderer(this);
             
         } 
+
+        public void Update(Camera Camera)
+        {
+
+            Renderer.Draw(Camera);
+
+        }
+
+        public void Destroy()
+        {
+
+            throw new NotImplementedException();
+
+        }
     }
 }

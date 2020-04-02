@@ -74,6 +74,7 @@ namespace InvarEngine
         {   
 
             GL.Viewport(0, 0, window.Width, window.Height);
+            
             /*
             int NewSize = 0;
             if(window.Width > window.Height)
@@ -94,7 +95,7 @@ namespace InvarEngine
             GL.ClearColor(Color.FromArgb(5, 5, 25));
             GL.Enable(EnableCap.DepthTest);
 
-            window.CursorVisible = false;
+            
 
             gameLoop = new GameLoop(window);
             gameLoop.Start();
@@ -109,6 +110,8 @@ namespace InvarEngine
         void window_UpdateFrame(object sender, FrameEventArgs e)
         {
             gameLoop.Update();
+
+            window.CursorVisible = !window.Focused;
 
             KeyboardState Keyboardinput = Keyboard.GetState();  //gets current keyboard input
 
