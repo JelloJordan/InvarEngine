@@ -14,6 +14,8 @@ namespace InvarEngine
         Texture2D texture;
         OBJ Model;
 
+        ShaderProgram Shader;
+
         int VBO;
         uint[] indexBuffer;
         int IBO;
@@ -49,6 +51,8 @@ namespace InvarEngine
             {
                 Texture = ContentPipe.LoadTexture(textureFilePath);
             }
+
+            Shader = new ShaderProgram("Shader/Shader.vert", "Shader/Shader.frag");
             
 
             Mesh = Model.Mesh;
@@ -56,7 +60,7 @@ namespace InvarEngine
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
             GL.BufferData<Vertex>(BufferTarget.ArrayBuffer, (IntPtr)(Vertex.SizeInBytes * Mesh.Length), Mesh, BufferUsageHint.StaticDraw);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-
+            
             indexBuffer = Model.Indices;
             IBO = GL.GenBuffer();
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBO);
@@ -69,8 +73,6 @@ namespace InvarEngine
             GL.BindTexture(TextureTarget.Texture2D, Texture.ID);        
 
             Matrix4 projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(80), 1280f/720f, 0.1f, 100.0f); 
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadMatrix(ref projectionMatrix);
 
             Matrix4 viewMatrix =     
                                     Matrix4.CreateRotationY(MathHelper.DegreesToRadians(Camera.Rotation.Y)) *
@@ -85,24 +87,37 @@ namespace InvarEngine
                                     Matrix4.CreateScale(Parent.Scale, Parent.Scale, Parent.Scale) *
                                     RotationMatrix * 
                                     Matrix4.CreateTranslation(Parent.Position) * 
-                                    Matrix4.CreateTranslation(Camera.Position) *
-                                    viewMatrix;
+                                    Matrix4.CreateTranslation(Camera.Position);
 
-   
-            GL.MatrixMode(MatrixMode.Modelview);
-            GL.LoadMatrix(ref modelMatrix);
+            Shader.SetMatrix4("Model", modelMatrix);
+            Shader.SetMatrix4("View", viewMatrix);
+            Shader.SetMatrix4("Projection", projectionMatrix);
 
             GL.EnableClientState(ArrayCap.ColorArray);
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.EnableClientState(ArrayCap.TextureCoordArray);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, VBO);
-            GL.VertexPointer(3, VertexPointerType.Float, Vertex.SizeInBytes, (IntPtr)0);
-            GL.TexCoordPointer(2, TexCoordPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes));
-            GL.ColorPointer(4, ColorPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes + Vector2.SizeInBytes));
+            GL.VertexAttribPointer(0, 3, VertexAttribPointerType.Float, false,Vertex.SizeInBytes, (IntPtr)0);
+            GL.EnableVertexAttribArray(0);
+            GL.VertexAttribPointer(1, 2, VertexAttribPointerType.Float, false,Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes));
+            GL.EnableVertexAttribArray(1);
+            GL.VertexAttribPointer(2, 4, VertexAttribPointerType.Float, false,Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes + Vector2.SizeInBytes));
+            GL.EnableVertexAttribArray(2);
+            //GL.VertexPointer(3, VertexPointerType.Float, Vertex.SizeInBytes, (IntPtr)0);
+            //GL.TexCoordPointer(2, TexCoordPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes));
+            //GL.ColorPointer(4, ColorPointerType.Float, Vertex.SizeInBytes, (IntPtr)(Vector3.SizeInBytes + Vector2.SizeInBytes));
+
+            Shader.Use();
+ 
 
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, IBO);      
             GL.DrawElements(PrimitiveType.Triangles, indexBuffer.Length, DrawElementsType.UnsignedInt, 0);   
+
+            GL.DisableVertexAttribArray(0);
+            GL.DisableVertexAttribArray(1);
+            GL.DisableVertexAttribArray(2);
+
 
         }
         
