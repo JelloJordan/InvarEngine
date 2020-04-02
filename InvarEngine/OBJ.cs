@@ -9,7 +9,20 @@ namespace InvarEngine
 
         private Vertex[] mesh;
         private uint[] indices;
-        
+        private bool error;
+
+        public bool ERROR
+        {
+            get
+            {
+                return error;
+            }
+            set
+            {
+                this.error = value;
+            }
+        }    
+
         public Vertex[] Mesh { get { return mesh; } }
         public uint[] Indices { get { return indices; } }
 
@@ -17,6 +30,7 @@ namespace InvarEngine
         {
             this.mesh = mesh;
             this.indices = indices;
+            this.error = false;
         }
     }
 }
