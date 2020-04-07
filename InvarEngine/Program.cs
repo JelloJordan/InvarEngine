@@ -10,7 +10,18 @@ namespace InvarEngine
         static void Main(string[] args)
         {
 
-            GameWindow window = new GameWindow(1280, 720, GraphicsMode.Default, "Invar Engine Tech Demo");
+            
+
+            GraphicsMode Graphics;
+            //Graphics = GraphicsMode.Default;
+
+            Graphics = new GraphicsMode(new ColorFormat(8, 8, 8, 0), 
+            24, // Depth bits
+            8,  // Stencil bits
+            4   // FSAA samples
+            );
+
+            GameWindow window = new GameWindow(1280, 720, Graphics, "Invar Engine Tech Demo");
             Game game = new Game(window);
 
             window.Run();

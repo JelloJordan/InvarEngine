@@ -21,7 +21,7 @@ namespace InvarEngine
         public static Texture2D LoadTexture(string filePath, bool pixelated = false)
         {
 
-            filePath = "Content/" + filePath;
+            filePath = "Content/Textures/" + filePath;
 
             if(!File.Exists(filePath))
             {
@@ -31,7 +31,7 @@ namespace InvarEngine
                 Console.WriteLine("ERROR : Filename '" + filePath + "' not found!");
                 Console.ResetColor();
 
-                filePath = "Content/" + "ERROR.png";
+                filePath = "Content/Textures/" + "ERROR.png";
                 pixelated = true;
 
             }
@@ -49,14 +49,18 @@ namespace InvarEngine
             //GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmp.Width, bmp.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
-
+            GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);  
             bmp.UnlockBits(data);
 
             //GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
             //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMaxLod, 0f);
 
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, pixelated ? (int)TextureMinFilter.Nearest : (int)TextureMinFilter.Linear);
+            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, pixelated ? (int)TextureMinFilter.Nearest : (int)TextureMinFilter.LinearMipmapLinear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, pixelated ? (int)TextureMagFilter.Nearest : (int)TextureMagFilter.Linear);
+
+            float maxAniso = 4f;
+            GL.GetFloat((GetPName)ExtTextureFilterAnisotropic.MaxTextureMaxAnisotropyExt, out maxAniso);
+            GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt, maxAniso);
 
             //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (float)TextureWrapMode.Repeat);
             //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (float)TextureWrapMode.Repeat);
@@ -69,7 +73,7 @@ namespace InvarEngine
 
         public static OBJ LoadOBJ(string filePath, float ImportScale ,bool ImportNormals = false)
         {
-            filePath = "Content/" + filePath;
+            filePath = "Content/Models/" + filePath;
             bool ERROR = false;
 
             if(!File.Exists(filePath))
@@ -80,7 +84,7 @@ namespace InvarEngine
                 Console.WriteLine("ERROR : Filename '" + filePath + "' not found!");
                 Console.ResetColor();
 
-                filePath = "Content/" + "ERROR.Obj";
+                filePath = "Content/Models/" + "ERROR.Obj";
                 ImportScale = 1;
                 ERROR = true;
             }
@@ -179,7 +183,7 @@ namespace InvarEngine
 
         public static List<GameObject> LoadScene(string filePath)
         {
-            filePath = "Scenes/" + filePath;
+            filePath = "Content/Scenes/" + filePath;
 
             if(!File.Exists(filePath))
             {

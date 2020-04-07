@@ -19,12 +19,12 @@ namespace InvarEngine
 
         public ShaderProgram(string vertexPath, string fragmentPath)
         {
-            using (StreamReader reader = new StreamReader("Shaders/Shader.vert", Encoding.UTF8))
+            using (StreamReader reader = new StreamReader("Content/Shaders/Shader.vert", Encoding.UTF8))
             {
                 VertexShaderSource = reader.ReadToEnd();
             }
 
-            using (StreamReader reader = new StreamReader("Shaders/Shader.frag", Encoding.UTF8))
+            using (StreamReader reader = new StreamReader("Content/Shaders/Shader.frag", Encoding.UTF8))
             {
                 FragmentShaderSource = reader.ReadToEnd();
             }
