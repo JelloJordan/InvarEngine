@@ -3,7 +3,7 @@
 in vec2 pass_textureCoords;
 in vec3 surfaceNormal;
 in vec3 toLightVector;
-in float lightDistance;wa
+in float lightDistance;
 //in vec3 toCameraVector;
 
 out vec4 out_Color;
@@ -14,8 +14,8 @@ uniform float directionalLightStrength;
 uniform vec3 directionalLightVector;
 uniform float ambientLightIntensity;
 
-uniform float shineDamper;
-uniform float reflectivity;
+//uniform float shineDamper;
+//uniform float reflectivity;
 
 void main(void)
 {

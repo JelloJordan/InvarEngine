@@ -1,3 +1,4 @@
 Metal.jpg
 0.25
 0.80
+false

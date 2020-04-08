@@ -33,10 +33,11 @@ namespace InvarEngine
             if(Model.ERROR)
             {
                 Parent.Rotation = Vector3.Zero;
+                Parent.Scale = 1f;
                 Texture = ContentPipe.LoadTexture("ERROR.png", true);
             }else
             {
-                Texture = ContentPipe.LoadTexture(Mat.TextureFilePath);
+                Texture = ContentPipe.LoadTexture(Mat.TextureFilePath, Mat.Pixelated);
             }
 
             Shader = new ShaderProgram("Shader/Shader.vert", "Shader/Shader.frag");
@@ -50,8 +51,8 @@ namespace InvarEngine
             
             Shader.SetFloat("ambientLightIntensity", .5f);
 
-            Shader.SetFloat("shineDamper", Mat.ShineDamper);
-            Shader.SetFloat("reflectivity", Mat.Reflectivity);
+            //Shader.SetFloat("shineDamper", Mat.ShineDamper);
+            //Shader.SetFloat("reflectivity", Mat.Reflectivity);
             
             
             

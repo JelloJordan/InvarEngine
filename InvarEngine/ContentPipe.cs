@@ -188,7 +188,7 @@ namespace InvarEngine
             string TotalContents = reader.ReadToEnd();
             string[] Lines = TotalContents.Split('\n');
             
-            return new Material(Lines[0], float.Parse(Lines[1]), float.Parse(Lines[2]));
+            return new Material(Lines[0], float.Parse(Lines[1]), float.Parse(Lines[2]), System.Boolean.Parse(Lines[3]));
 
         }
 

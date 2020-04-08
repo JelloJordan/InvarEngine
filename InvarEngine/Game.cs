@@ -1,4 +1,6 @@
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -7,55 +9,29 @@ using OpenTK.Input;
 
 namespace InvarEngine
 {
-    struct Camera
-    {
-
-        Vector3 position;
-        Vector3 rotation;
-        float fov;
-
-        public Vector3 Position
-        {
-            get
-            {
-                return position;
-            }
-            set
-            {
-                position = value;
-            }
-        }
-
-        public Vector3 Rotation
-        {
-            get
-            {
-                return rotation;
-            }
-            set
-            {
-                rotation = value;
-            }
-        }
-
-        public float FOV
-        {
-            get
-            {
-                return fov;
-            }
-            set
-            {
-                fov = value;
-            }
-        }
-
-    }
-
     class Game  //Detach gamelogic from gamewindow script
     {
         public GameWindow window;
         public GameLoop gameLoop;
+
+        
+        public static float CurrentFPS = 0f;
+        public static int FramesThisSecond = 0;
+        Task FrameTracker = new Task(() =>
+                {
+                    while (true)
+                    {   
+                        FPSMATH();
+                        Thread.Sleep(1000);
+                    }
+                });
+
+        static void FPSMATH()
+        {
+            CurrentFPS = FramesThisSecond;
+            Console.WriteLine("FPS : " + CurrentFPS);
+            FramesThisSecond = 0;
+        }
 
         public Game(GameWindow windowInput)
         {
@@ -67,6 +43,8 @@ namespace InvarEngine
             window.UpdateFrame += window_UpdateFrame;
             window.Closing += window_Closing;
             window.Resize += window_Resize;
+
+            //FrameTracker.Start();
 
         }
 
@@ -95,6 +73,8 @@ namespace InvarEngine
             //GL.ClearColor(Color.FromArgb(5, 5, 25));
             GL.ClearColor(Color.Black);
             GL.Enable(EnableCap.DepthTest);
+            GL.Enable(EnableCap.CullFace);
+            GL.CullFace(CullFaceMode.Back);
 
             
 
@@ -110,6 +90,7 @@ namespace InvarEngine
 
         void window_UpdateFrame(object sender, FrameEventArgs e)
         {
+            
             gameLoop.Update();
 
             window.CursorVisible = !window.Focused;
@@ -133,6 +114,7 @@ namespace InvarEngine
 
         void window_RenderFrame(object sender, FrameEventArgs e)
         {
+            FramesThisSecond++;
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.Clear(ClearBufferMask.DepthBufferBit); 
 
