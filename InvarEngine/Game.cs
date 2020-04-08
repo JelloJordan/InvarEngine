@@ -92,7 +92,8 @@ namespace InvarEngine
 
         void window_Load(object sender, EventArgs e)
         {
-            GL.ClearColor(Color.FromArgb(5, 5, 25));
+            //GL.ClearColor(Color.FromArgb(5, 5, 25));
+            GL.ClearColor(Color.Black);
             GL.Enable(EnableCap.DepthTest);
 
             

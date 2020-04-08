@@ -3,23 +3,40 @@
 in vec2 pass_textureCoords;
 in vec3 surfaceNormal;
 in vec3 toLightVector;
+in float lightDistance;wa
+//in vec3 toCameraVector;
 
 out vec4 out_Color;
 
 uniform sampler2D textureSampler;
-uniform vec3 lightColor;
+uniform float lightStrength;
+uniform float directionalLightStrength;
+uniform vec3 directionalLightVector;
+uniform float ambientLightIntensity;
+
+uniform float shineDamper;
+uniform float reflectivity;
 
 void main(void)
 {
-
     vec3 unitNormal = normalize(surfaceNormal);
     vec3 unitLightVector = normalize(toLightVector);
 
-    float nDot1 = dot(unitNormal, toLightVector);
-    float brightness = max(nDot1, 0);
-    vec3 diffuse = brightness * lightColor;
+    float nDot1 = dot(unitNormal, unitLightVector);
+    float sunDot = dot(unitNormal, directionalLightVector);
+    float brightness = max(max(nDot1, ambientLightIntensity) * lightStrength * lightDistance, (max(sunDot, ambientLightIntensity) * directionalLightStrength));
 
-    //out_Color = vec4(diffuse, 1) * texture(textureSampler, pass_textureCoords);
-    out_Color = texture(textureSampler, pass_textureCoords);
+    //vec3 unitVectorToCamera = normalize(toCameraVector);
+    //vec3 lightDirection = -directionalLightVector;
+    //vec3 reflectedLightDirection = reflect(lightDirection, unitNormal);
+
+    //float specularFactor = dot(reflectedLightDirection, unitVectorToCamera);
+    //specularFactor = max(specularFactor, 0);
+    //float dampedFactor = pow(specularFactor, shineDamper);
+    //float finalSpecular = dampedFactor * directionalLightStrength;
+
+    out_Color = vec4(brightness,brightness,brightness,1) * texture(textureSampler, pass_textureCoords);
+
+    //out_Color = vec4(brightness,brightness,brightness,1) * texture(textureSampler, pass_textureCoords) + vec4(finalSpecular,finalSpecular,finalSpecular, 1f);
 
 }

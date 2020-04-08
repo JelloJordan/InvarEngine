@@ -11,8 +11,9 @@ namespace InvarEngine
     { 
         GameObject Parent;
         Vertex[] Mesh;
-        Texture2D texture;
+        Texture2D Texture;
         OBJ Model;
+        Material Mat;
 
         ShaderProgram Shader;
 
@@ -20,42 +21,37 @@ namespace InvarEngine
         uint[] indexBuffer;
         int IBO;
 
-        public Texture2D Texture
-        {
-            get
-            {
-
-                return texture;
-
-            }
-            set
-            {
-                this.texture = value;
-            }
-        }
-
         public Renderer(GameObject Parent)
         {
             this.Parent = Parent;
         }
 
-        public void Bind(string modelFilePath, string textureFilePath)
+        public void Bind(string modelFilePath, string materialFilePath)
         {
-            
             Model = ContentPipe.LoadOBJ(modelFilePath, 1f);
+            Mat = ContentPipe.LoadMaterial(materialFilePath);
             if(Model.ERROR)
             {
                 Parent.Rotation = Vector3.Zero;
                 Texture = ContentPipe.LoadTexture("ERROR.png", true);
             }else
             {
-                Texture = ContentPipe.LoadTexture(textureFilePath);
+                Texture = ContentPipe.LoadTexture(Mat.TextureFilePath);
             }
 
             Shader = new ShaderProgram("Shader/Shader.vert", "Shader/Shader.frag");
 
-            Shader.SetVector3("lightPosition", new Vector3(0f,5f,0f));
-            Shader.SetVector3("lightColor", new Vector3(.1f,.1f,.1f));
+            //Shader.SetVector3("lightPosition", new Vector3(0f,5f,0f));
+            Shader.SetFloat("lightStrength", 0f);
+            Shader.SetFloat("lightRange", 5f);
+
+            Shader.SetVector3("directionalLightVector", new Vector3(0.5f, 1f, .5f));
+            Shader.SetFloat("directionalLightStrength", 1f);
+            
+            Shader.SetFloat("ambientLightIntensity", .5f);
+
+            Shader.SetFloat("shineDamper", Mat.ShineDamper);
+            Shader.SetFloat("reflectivity", Mat.Reflectivity);
             
             
             
@@ -75,9 +71,9 @@ namespace InvarEngine
 
         public void Draw(Camera Camera)
         {   
-            Matrix4 projectionMatrix = Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(80), 1280f/720f, 0.1f, 100.0f); 
+            Matrix4 projectionMatrix =  Matrix4.CreatePerspectiveFieldOfView(MathHelper.DegreesToRadians(80), 1280f/720f, 0.1f, 100.0f);
 
-            Matrix4 viewMatrix =     
+            Matrix4 viewMatrix =    Matrix4.CreateTranslation(Camera.Position) *
                                     Matrix4.CreateRotationY(MathHelper.DegreesToRadians(Camera.Rotation.Y)) *
                                     Matrix4.CreateRotationX(MathHelper.DegreesToRadians(Camera.Rotation.X)) *
                                     Matrix4.CreateRotationZ(MathHelper.DegreesToRadians(Camera.Rotation.Z));
@@ -89,12 +85,13 @@ namespace InvarEngine
             Matrix4 modelMatrix =   Matrix4.Identity *
                                     Matrix4.CreateScale(Parent.Scale, Parent.Scale, Parent.Scale) *
                                     RotationMatrix * 
-                                    Matrix4.CreateTranslation(Parent.Position) * 
-                                    Matrix4.CreateTranslation(Camera.Position);
+                                    Matrix4.CreateTranslation(Parent.Position);
 
             Shader.SetMatrix4("Model", modelMatrix);
             Shader.SetMatrix4("View", viewMatrix);
             Shader.SetMatrix4("Projection", projectionMatrix); 
+
+            Shader.SetVector3("lightPosition", -Camera.Position);
 
             GL.EnableClientState(ArrayCap.ColorArray);
             GL.EnableClientState(ArrayCap.VertexArray);

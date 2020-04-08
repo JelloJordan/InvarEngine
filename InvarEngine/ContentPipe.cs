@@ -40,20 +40,13 @@ namespace InvarEngine
             BitmapData data = bmp.LockBits(new Rectangle(0, 0, bmp.Width, bmp.Height), ImageLockMode.ReadOnly, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
             int id = GL.GenTexture();
-            
-            
-            //GL.TexParameter(TextureTarget.Texture2D, GL.TextureMinFilter, )
 
             GL.ActiveTexture(TextureUnit.Texture0);
             GL.BindTexture(TextureTarget.Texture2D, id);
-            //GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
 
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, bmp.Width, bmp.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, data.Scan0);
             GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);  
             bmp.UnlockBits(data);
-
-            //GL.GenerateMipmap(GenerateMipmapTarget.Texture2D);
-            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMaxLod, 0f);
 
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, pixelated ? (int)TextureMinFilter.Nearest : (int)TextureMinFilter.LinearMipmapLinear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, pixelated ? (int)TextureMagFilter.Nearest : (int)TextureMagFilter.Linear);
@@ -61,9 +54,6 @@ namespace InvarEngine
             float maxAniso = 4f;
             GL.GetFloat((GetPName)ExtTextureFilterAnisotropic.MaxTextureMaxAnisotropyExt, out maxAniso);
             GL.TexParameter(TextureTarget.Texture2D, (TextureParameterName)ExtTextureFilterAnisotropic.TextureMaxAnisotropyExt, maxAniso);
-
-            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (float)TextureWrapMode.Repeat);
-            //GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (float)TextureWrapMode.Repeat);
 
             GL.BindTexture(TextureTarget.Texture2D, 0);
 
@@ -181,6 +171,27 @@ namespace InvarEngine
             return new OBJ(VertList.ToArray(), IndList.ToArray()){ERROR = ERROR};
         }
 
+        public static Material LoadMaterial(string filePath)
+        {
+
+            filePath = "Content/Materials/" + filePath;
+
+            if(!File.Exists(filePath))
+            {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("ERROR : Filename '" + filePath + "' not found!");
+                Console.ResetColor();
+                filePath = "Content/Materials/" + "ERROR.txt";
+            }
+
+            StreamReader reader = new StreamReader(filePath);
+            string TotalContents = reader.ReadToEnd();
+            string[] Lines = TotalContents.Split('\n');
+            
+            return new Material(Lines[0], float.Parse(Lines[1]), float.Parse(Lines[2]));
+
+        }
+
         public static List<GameObject> LoadScene(string filePath)
         {
             filePath = "Content/Scenes/" + filePath;
@@ -201,7 +212,7 @@ namespace InvarEngine
 
             float xOffset = 0;
 
-            for(int j = 0; j < 10; j++)
+            for(int j = 0; j < 1; j++)
             {
                 
             for(int i = 0; i < Lines.Length - 1; i++)

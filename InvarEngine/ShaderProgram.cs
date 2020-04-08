@@ -92,5 +92,13 @@ namespace InvarEngine
                 GL.Uniform3(_uniformLocations[name], ref data);
             }catch{}
         }
+
+        public void SetFloat(string name, float data)
+        {
+            try{
+                GL.UseProgram(Handle);
+                GL.Uniform1(_uniformLocations[name], data);
+            }catch{}
+        }
     }
 }
