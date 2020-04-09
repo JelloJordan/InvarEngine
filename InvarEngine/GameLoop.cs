@@ -34,6 +34,15 @@ namespace InvarEngine
             MouseState Mouseinput = Mouse.GetCursorState();
 
             PlayerMovement(Keyboardinput, Mouseinput);
+
+            if(Keyboardinput.IsKeyDown(Key.R))
+            {
+
+                GameObject Object = new GameObject(new Vector3(5, 0, 5), Vector3.Zero, 1);
+                Object.Renderer.Bind("Sphere3.Obj", "Grass.txt");
+                AllObjects.Add(Object);
+
+            }
         }
 
         public void Draw()

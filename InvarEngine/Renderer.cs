@@ -49,7 +49,7 @@ namespace InvarEngine
             Shader.SetVector3("directionalLightVector", new Vector3(0.5f, 1f, .5f));
             Shader.SetFloat("directionalLightStrength", 1f);
             
-            Shader.SetFloat("ambientLightIntensity", .5f);
+            Shader.SetFloat("ambientLightIntensity", .3f);
 
             //Shader.SetFloat("shineDamper", Mat.ShineDamper);
             //Shader.SetFloat("reflectivity", Mat.Reflectivity);
